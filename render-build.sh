@@ -1,19 +1,20 @@
 #!/usr/bin/env bash
+set -o errexit  # Stop on error
 
-# Créer un dossier temporaire local
-mkdir -p /opt/chrome
-mkdir -p /opt/chromedriver
+# Répertoire persistant sur Render (autorisé en écriture)
+STORAGE_DIR=/opt/render/project/.render
 
-# Installer Chrome stable
-apt-get update
-apt-get install -y wget unzip curl gnupg ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 \
-  libatk1.0-0 libcups2 libdbus-1-3 libgdk-pixbuf2.0-0 libnspr4 libnss3 libx11-xcb1 libxcomposite1 libxdamage1 libxrandr2 \
-  xdg-utils libu2f-udev libvulkan1
+if [[ ! -d $STORAGE_DIR/chrome ]]; then
+  echo "⬇️ Téléchargement de Chrome (cache inexistant)"
+  mkdir -p $STORAGE_DIR/chrome
+  cd $STORAGE_DIR/chrome
+  wget -P ./ https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+  dpkg -x ./google-chrome-stable_current_amd64.deb $STORAGE_DIR/chrome
+  rm ./google-chrome-stable_current_amd64.deb
+  cd $HOME/project/src  # Retour dans le dossier source
+else
+  echo "✅ Chrome trouvé en cache, utilisation..."
+fi
 
-wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-apt install -y ./google-chrome-stable_current_amd64.deb
-
-# Installer ChromeDriver dans /opt/chromedriver
-wget -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip
-unzip /tmp/chromedriver.zip -d /opt/chromedriver
-chmod +x /opt/chromedriver/chromedriver
+# Installer dépendances Python
+pip install -r requirements.txt
