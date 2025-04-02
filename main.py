@@ -25,11 +25,11 @@ def send_twilio_message(message):
         from_=FROM_NUMBER,
         to=TO_NUMBER
     )
-
+    
 def start_driver():
     logging.info("🚀 Lancement du WebDriver...")
     chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/google-chrome"  # <-- Important pour Render
+    chrome_options.binary_location = "/usr/bin/google-chrome"  # Important !
 
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
@@ -40,7 +40,6 @@ def start_driver():
     driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     driver.maximize_window()
     return driver
-
 
 def open_ticket_page(driver):
     url = "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-premium-tout-public-rcsa-ogc-nice-2024-wqxeuidmshon"
