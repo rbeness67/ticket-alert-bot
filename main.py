@@ -25,11 +25,12 @@ def send_twilio_message(message):
         from_=FROM_NUMBER,
         to=TO_NUMBER
     )
-    
+
 def start_driver():
     logging.info("🚀 Lancement du WebDriver...")
+
     chrome_options = Options()
-    chrome_options.binary_location = "/usr/bin/google-chrome"  # Important !
+    chrome_options.binary_location = "/usr/bin/google-chrome"
 
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-gpu")
@@ -37,7 +38,10 @@ def start_driver():
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1920x1080")
 
-    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    driver = webdriver.Chrome(
+        executable_path="/opt/chromedriver/chromedriver",  # 👈 Chemin personnalisé
+        options=chrome_options
+    )
     driver.maximize_window()
     return driver
 
