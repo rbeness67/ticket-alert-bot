@@ -46,7 +46,9 @@ def open_ticket_page(driver):
 
 def is_tickets_available(driver):
     sections = ["NORD", "OUEST", "EST"]
-    
+    print("test")
+    message = f"🎫 Programme Lancé"
+    send_twilio_message(message)  
     for section in sections:
         try:
             button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), '{section}')]]")
