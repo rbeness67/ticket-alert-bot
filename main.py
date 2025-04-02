@@ -66,6 +66,8 @@ def is_tickets_available(driver):
                 send_twilio_message(message)  # ✅ TWILIO MESSAGE POUR SECTION OUEST
                 time.sleep(1)     
         except:
+            message = f"🎫 Pas de tickets dans la section: {section}"
+            send_twilio_message(message)  # ✅ TWILIO MESSAGE ICI
             time.sleep(0.1)
 
 def attempt_booking(driver):
