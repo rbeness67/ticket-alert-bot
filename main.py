@@ -1,16 +1,15 @@
 import time
 import logging
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
 from twilio.rest import Client 
-from dotenv import load_dotenv
  # Twilio client
 
 # Charger les variables d'environnement depuis .env
-load_dotenv()
 
 # Récupération des infos Twilio depuis l'environnement
 ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
