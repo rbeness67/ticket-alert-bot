@@ -1,0 +1,5 @@
+selenium
+twilio
+webdriver-manager
+python-dotenv
+
