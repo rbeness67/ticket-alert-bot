@@ -12,6 +12,7 @@ from twilio.rest import Client
  # Twilio client
 
 # Charger les variables d'environnement depuis .env
+load_dotenv()
 
 # Configuration Twilio
 TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
