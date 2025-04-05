@@ -23,8 +23,10 @@ TWILIO_WHATSAPP_TO = os.getenv("TWILIO_WHATSAPP_TO")
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 def send_twilio_sms(message):
-    """Envoie un message WhatsApp via Twilio."""
     try:
+        if not all([TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, TWILIO_WHATSAPP_TO]):
+            raise ValueError("❌ Variables d'environnement Twilio manquantes.")
+
         logging.info(f"📲 Envoi WhatsApp à {TWILIO_WHATSAPP_TO}")
         client.messages.create(
             body=message,
