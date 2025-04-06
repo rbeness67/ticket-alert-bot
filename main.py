@@ -45,7 +45,6 @@ def start_driver():
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1920x1080")
-
     driver = webdriver.Chrome(options=chrome_options)
     driver.maximize_window()
     return driver
@@ -57,7 +56,7 @@ def open_ticket_page(driver):
 def is_tickets_available(driver):
     try:
         logging.info("Checking for 'OUEST' button...")
-        button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'OUEST')]]")
+        button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'NORD')]]")
 
         send_twilio_sms("🎫 Billet OUEST détecté ! Dépêche-toi vite!")
         time.sleep(200)
