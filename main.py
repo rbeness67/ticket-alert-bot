@@ -51,17 +51,17 @@ def start_driver():
     return driver
 
 def open_ticket_page(driver):
-    url = "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-feminines-tout-public-racing-le-havre-2024-qqgxq35d60wd/plan#bk3ff5275b-zone"
+    url = "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-tout-public-rcsa-ogc-nice-2024-7o3ifb9mj5tc"
     driver.get(url)
 
 def is_tickets_available(driver):
     try:
-        logging.info("Checking for 'NORD' button...")
-        button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'NORD')]]")
+        logging.info("Checking for 'OUEST' button...")
+        button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'OUEST')]]")
 
-        send_twilio_sms("🎫 Billet NORD détecté ! Dépêche-toi vite!")
-        time.sleep(180)
-        logging.info("'NORD' ticket found!")
+        send_twilio_sms("🎫 Billet OUEST détecté ! Dépêche-toi vite!")
+        time.sleep(200)
+        logging.info("'OUEST' ticket found!")
         return True
 
     except Exception as e:
@@ -72,7 +72,7 @@ def attempt_booking(driver):
     while True:
         is_tickets_available(driver)
         driver.refresh()
-        time.sleep(30)
+        time.sleep(10)
 
 def main():
     driver = start_driver()
