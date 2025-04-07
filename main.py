@@ -55,14 +55,21 @@ def open_ticket_page(driver):
 
 def is_tickets_available(driver):
     try:
-        logging.info("Checking for 'OUEST' button...")
-        button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'OUEST')]]")
-
-        send_twilio_sms("🎫 Billet OUEST détecté ! Dépêche-toi vite!")
-        time.sleep(200)
+        button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'EST')]]")
         logging.info("'OUEST' ticket found!")
-        return True
+        try:
+            button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'NORD')]]")
 
+            send_twilio_sms("🎫 Billet NORD ou EST/OUEST détecté ! Dépêche-toi vite!")
+            time.sleep(200)
+            logging.info("'OUEST' ticket found!")
+            return True
+
+        except Exception as e:
+            send_twilio_sms("🎫 Billet OUEST détecté ! Dépêche-toi vite!")
+            time.sleep(200)
+
+            return True
     except Exception as e:
         time.sleep(.1)
     return False
