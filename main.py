@@ -32,7 +32,7 @@ def send_twilio_template_message():
         message = client.messages.create(
             from_=TWILIO_WHATSAPP_FROM,
             to=TWILIO_WHATSAPP_TO,
-            content_sid="your_content_sid_if_using_content_api",  # sinon retire cette ligne
+            content_sid="yHX9eb3d8eb280d2164cc013093ab79e867",  # sinon retire cette ligne
         
         )
 
