@@ -21,21 +21,26 @@ TWILIO_WHATSAPP_TO = os.getenv("TWILIO_WHATSAPP_TO")
 
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
-def send_twilio_sms(message):
-    """Envoie un message WhatsApp via Twilio."""
+def send_twilio_template_message():
+    """Envoie un message WhatsApp via un template Twilio."""
     try:
         if not all([TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, TWILIO_WHATSAPP_TO]):
             raise ValueError("❌ Variable(s) d'environnement manquante(s)")
-        
-        logging.info(f"📲 Envoi WhatsApp à {TWILIO_WHATSAPP_TO}")
-        client.messages.create(
-            body=message,
+
+        logging.info(f"📲 Envoi WhatsApp TEMPLATE à {TWILIO_WHATSAPP_TO}")
+
+        message = client.messages.create(
             from_=TWILIO_WHATSAPP_FROM,
-            to=TWILIO_WHATSAPP_TO
+            to=TWILIO_WHATSAPP_TO,
+            content_sid="your_content_sid_if_using_content_api",  # sinon retire cette ligne
+        
         )
-        logging.info("✅ Message WhatsApp envoyé via Twilio.")
+
+        logging.info(f"✅ Template envoyé (SID : {message.sid})")
+
     except Exception as e:
-        logging.error(f"❌ Erreur lors de l'envoi du message WhatsApp : {e}")
+        logging.error(f"❌ Erreur lors de l'envoi du message template WhatsApp : {e}")
+
 
 def start_driver():
     chrome_options = Options()
@@ -56,22 +61,13 @@ def open_ticket_page(driver):
 def is_tickets_available(driver):
     try:
         driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'EST')]]")
-        logging.info("'OUEST' ticket found!")
+        send_twilio_template_message()
+    except:
         try:
             driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'NORD')]]")
-
-            send_twilio_sms("🎫 Billet NORD ou EST/OUEST détecté ! Dépêche-toi vite!")
-            time.sleep(200)
-            logging.info("'OUEST' ticket found!")
+            send_twilio_template_message()
+        except:
             return True
-
-        except Exception as e:
-            send_twilio_sms("🎫 Billet OUEST détecté ! Dépêche-toi vite!")
-            time.sleep(200)
-
-            return True
-    except Exception as e:
-        time.sleep(.1)
     return False
 
 def attempt_booking(driver):
@@ -86,5 +82,5 @@ def main():
     attempt_booking(driver)
 
 if __name__ == "__main__":
-    send_twilio_sms("🚀 Test WhatsApp Render OK")
+    send_twilio_template_message()
     main()
