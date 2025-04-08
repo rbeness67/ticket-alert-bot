@@ -18,6 +18,7 @@ TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
 TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
 TWILIO_WHATSAPP_FROM = os.getenv("TWILIO_WHATSAPP_FROM")
 TWILIO_WHATSAPP_TO = os.getenv("TWILIO_WHATSAPP_TO")
+TWILIO_WHATSAPP_TEMPLATE_SID = os.getenv("TWILIO_WHATSAPP_TEMPLATE_SID")
 
 client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
@@ -32,7 +33,7 @@ def send_twilio_template_message():
         message = client.messages.create(
             from_=TWILIO_WHATSAPP_FROM,
             to=TWILIO_WHATSAPP_TO,
-            content_sid="yHX9eb3d8eb280d2164cc013093ab79e867",  # sinon retire cette ligne
+            content_sid=TWILIO_WHATSAPP_TEMPLATE_SID
         
         )
 
