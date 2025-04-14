@@ -1,87 +1,85 @@
+
+
 import time
 import logging
-import os
-
-# En LOCAL : décommente la ligne suivante si tu testes avec un fichier .env
-# from dotenv import load_dotenv
-# load_dotenv()
-
+import smtplib
+from email.mime.text import MIMEText
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
-from twilio.rest import Client 
 
-# Récupération des variables d'environnement
-TWILIO_ACCOUNT_SID = os.getenv("TWILIO_ACCOUNT_SID")
-TWILIO_AUTH_TOKEN = os.getenv("TWILIO_AUTH_TOKEN")
-TWILIO_WHATSAPP_FROM = os.getenv("TWILIO_WHATSAPP_FROM")
-TWILIO_WHATSAPP_TO = os.getenv("TWILIO_WHATSAPP_TO")
-TWILIO_WHATSAPP_TEMPLATE_SID = os.getenv("TWILIO_WHATSAPP_TEMPLATE_SID")
+# Email credentials (use an app password if using Gmail)
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 587
+SENDER_EMAIL = "rayane@may.fr"
+SENDER_PASSWORD = "csxs zgqj noeu zmsu"  # Use an app-specific password if 2FA is enabled
+TO_EMAIL = "tickrcsa@gmail.com"
 
-client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+def send_email_notification(subject, message):
+    """Send an email using SMTP."""
+    msg = MIMEText(message)
+    msg['Subject'] = subject
+    msg['From'] = SENDER_EMAIL
+    msg['To'] = TO_EMAIL
 
-def send_twilio_template_message():
-    """Envoie un message WhatsApp via un template Twilio."""
     try:
-        if not all([TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_WHATSAPP_FROM, TWILIO_WHATSAPP_TO]):
-            raise ValueError("❌ Variable(s) d'environnement manquante(s)")
-
-        logging.info(f"📲 Envoi WhatsApp TEMPLATE à {TWILIO_WHATSAPP_TO}")
-
-        message = client.messages.create(
-            from_=TWILIO_WHATSAPP_FROM,
-            to=TWILIO_WHATSAPP_TO,
-            content_sid=TWILIO_WHATSAPP_TEMPLATE_SID
-        
-        )
-
-        logging.info(f"✅ Template envoyé (SID : {message.sid})")
-
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(SENDER_EMAIL, SENDER_PASSWORD)
+            server.send_message(msg)
+            print("📧 Email sent!")
     except Exception as e:
-        logging.error(f"❌ Erreur lors de l'envoi du message template WhatsApp : {e}")
-
+        print(f"Error sending email: {e}")
+    time.sleep(30)
 
 def start_driver():
+    logging.info("Starting WebDriver...")
     chrome_options = Options()
-    chrome_options.binary_location = "/opt/render/project/.render/chrome/opt/google/chrome/google-chrome"
-    chrome_options.add_argument("--headless")
-    chrome_options.add_argument("--disable-gpu")
     chrome_options.add_argument("--no-sandbox")
+    chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1920x1080")
-    driver = webdriver.Chrome(options=chrome_options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
     driver.maximize_window()
+    logging.info("WebDriver started and window maximized.")
     return driver
 
 def open_ticket_page(driver):
-    url = "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-tout-public-rcsa-ogc-nice-2024-7o3ifb9mj5tc"
+    url = "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-tout-public-rcsa-as-saint-etienne-2024-jhmyrk2cizgu"
     driver.get(url)
 
 def is_tickets_available(driver):
-    try:
-        driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'EST')]]")
-        send_twilio_template_message()
-    except:
+    sections = ["NORD", "OUEST", "EST"]
+    
+    for section in sections:
         try:
-            driver.find_element(By.XPATH, f"//button[.//b[contains(text(), 'NORD')]]")
-            send_twilio_template_message()
+            button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), '{section}')]]")
+            button.click()
+            subject = "🎫 Billets disponibles !"
+            message = f"Tickets trouvés dans la section {section} !"
+            send_email_notification(subject, message)
+            return False
         except:
-            return True
-    return False
+            continue
 
 def attempt_booking(driver):
     while True:
         is_tickets_available(driver)
-        driver.refresh()
         time.sleep(10)
 
+        driver.refresh()
+
+
+
 def main():
+    subject = "LANCEMENT SAINT ETIENNE !"
+    message = f"Début du watch des tickets de saint etienne !"
+    send_email_notification(subject, message)
     driver = start_driver()
     open_ticket_page(driver)
     attempt_booking(driver)
 
 if __name__ == "__main__":
-    send_twilio_template_message()
     main()
