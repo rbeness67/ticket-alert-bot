@@ -67,28 +67,24 @@ def is_tickets_available(driver, match_name):
     return False
 
 def monitor_once(match_name, url):
-    subject = f"🎯 Watch lancé pour {match_name}"
-    message = f"Recherche de billets pour {match_name}..."
-    send_email_notification(subject, message)
-
+    
     driver = start_driver()
     try:
         open_ticket_page(driver, url)
-        if is_tickets_available(driver, match_name):
-            print(f"✅ Tickets found for {match_name}!")
-        else:
-            print(f"❌ No tickets for {match_name}.")
+        is_tickets_available(driver, match_name)
     except Exception as e:
         print(f"Error during monitoring {match_name}: {e}")
     finally:
         driver.quit()
 
 def main():
+    subject = f"🎯 Watch lancé pour saint etienne"
+    message = f"Recherche de billets pour saint etienne"
+    send_email_notification(subject, message)
+
     while True:
         for match_name, url in URLS:
-            print(f"🔍 Checking {match_name}...")
             monitor_once(match_name, url)
-            print("⏱️ Waiting 30 seconds before next match...")
             time.sleep(30)
 
 if __name__ == "__main__":
