@@ -18,7 +18,7 @@ TO_EMAIL = "tickrcsa@gmail.com"
 # URLs to monitor
 URLS = [
     ("BILLET UNITE SAINT ETIENNE", "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-tout-public-rcsa-as-saint-etienne-2024-jhmyrk2cizgu"),
-    ("REVENTE SAINT ETIENNE", "https://billetterie.rcstrasbourgalsace.fr/fr/second/match-rcsa-as-saint-etienne/#bk879b632e-zone")  # Replace with actual second URL
+    ("BILLET UNITE SAINT ETIENNE", "https://billetterie.rcstrasbourgalsace.fr/fr/acheter/billet-unite-tout-public-rcsa-as-saint-etienne-2024-jhmyrk2cizgu"),
 ]
 
 def send_email_notification(subject, message):
@@ -58,8 +58,8 @@ def is_tickets_available(driver, match_name):
         try:
             button = driver.find_element(By.XPATH, f"//button[.//b[contains(text(), '{section}')]]")
             button.click()
-            subject = f"🎫 Billets disponibles pour {match_name} !"
-            message = f"Tickets trouvés dans la section {section} pour {match_name} !"
+            subject = f"🟢 ⚪ SAINT ETIENNE !"
+            message = f"{section} Saint etiene !"
             send_email_notification(subject, message)
             return True
         except:
